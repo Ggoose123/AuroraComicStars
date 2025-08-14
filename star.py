@@ -24,9 +24,8 @@ class Star(pygame.sprite.Sprite):
         self.pos += self.vel
 
         # if moved out of bounds, spawn a new star
-        if not(-50 <= self.pos.x <= self.screen.get_width() + 50):
-            self.replace(1)
-        if not(-50 <= self.pos.y <= self.screen.get_height() + 50):
+        if (not(-50 <= self.pos.x <= self.screen.get_width() + 50)
+            or not(-50 <= self.pos.y <= self.screen.get_height() + 50)):
             self.replace(1)
 
     def update_velocity(self):
@@ -82,3 +81,16 @@ class Star(pygame.sprite.Sprite):
             group.add(replacement)
         self.kill()
         del self
+    
+    def wrap(self):
+        # wrap x
+        if self.pos.x > self.screen.get_width() + 50:
+            self.pos.x = -50
+        elif self.pos.x < -50:
+            self.pos.x = self.screen.get_width() + 50
+        
+        # wrap y
+        if self.pos.y > self.screen.get_height() + 50:
+            self.pos.y = -50
+        elif self.pos.y < -50:
+            self.pos.y = self.screen.get_height() + 50
