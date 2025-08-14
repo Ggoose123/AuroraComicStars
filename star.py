@@ -4,7 +4,7 @@ from math import *
 
 class Star(pygame.sprite.Sprite):
 
-    def __init__(self, screen, x, y, *groups, vel_x=0.0, vel_y=0.0, acc_x=0.0, acc_y=0.0,):
+    def __init__(self, screen: pygame.surface.Surface, x, y, *groups, vel_x=0.0, vel_y=0.0, acc_x=0.0, acc_y=0.0,):
         super().__init__(*groups)
         self.screen = screen
         self.pos = pygame.math.Vector2(x ,y)
