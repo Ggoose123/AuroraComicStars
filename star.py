@@ -82,7 +82,7 @@ class Star(pygame.sprite.Sprite):
         self.kill()
         del self
     
-    def wrap(self):
+    def screen_wrap(self):
         # wrap x
         if self.pos.x > self.screen.get_width() + 50:
             self.pos.x = -50
