@@ -37,9 +37,9 @@ class Star(pygame.sprite.Sprite):
         new_acc = pygame.math.Vector2(0, 0)
         # calculate a distance variable normalized so that it is centred and results in max accel at x
         x = 250
-        dis = (self.pos.x - self.screen.get_width()/2) / (sqrt(2) * x)
+        dis = (self.pos.x - self.screen.get_width()/2) / (sqrt(3/2) * x)
 
-        new_acc.update(-dis*(e**-(dis**2)), 0)
+        new_acc.update(-(dis**3)*(e**-(dis**2)), 0)
         new_acc = new_acc + pygame.math.Vector2(random.random()-0.5, random.random()-0.5) / 4
         new_acc.clamp_magnitude(1)
 
@@ -60,22 +60,26 @@ class Star(pygame.sprite.Sprite):
         if not (mode in [1, 2]):
             raise ValueError("invailid replace mode")
 
-        # mode 1: spawn star at random position anywhere on screen
-        if mode == 1:
-            replacement = Star(self.screen, random.randint(0, self.screen.get_width()), random.randint(0, self.screen.get_height()))
-        # mode 2: spawn star anywhere on the edge
-        if mode == 2:
-            lin_pos = random.randint(1, self.screen.get_width()*2 + self.screen.get_height()*2)
-            coords = pygame.math.Vector2(0, 0)
-            if lin_pos <= self.screen.get_width():
-                coords.update(lin_pos, 0)
-            elif lin_pos <= self.screen.get_width()*2:
-                coords.update(lin_pos-self.screen.get_width(), self.screen.get_height())
-            elif lin_pos <= self.screen.get_width()*2 + self.screen.get_height():
-                coords.update(0, lin_pos-self.screen.get_width()*2)
-            else:
-                coords.update(self.screen.get_height(), lin_pos-self.screen.get_width()*2-self.screen.get_height())
-            replacement = Star(self.screen, coords.x, coords.y)
+
+        match mode:
+            # mode 1: spawn star at random position anywhere on screen
+            case 1:
+                replacement = Star(self.screen, random.randint(0, self.screen.get_width()), random.randint(0, self.screen.get_height()))
+            # mode 2: spawn star anywhere on the edge
+            case 2:
+                lin_pos = random.randint(1, self.screen.get_width()*2 + self.screen.get_height()*2)
+                coords = pygame.math.Vector2(0, 0)
+                if lin_pos <= self.screen.get_width():
+                    coords.update(lin_pos, 0)
+                elif lin_pos <= self.screen.get_width()*2:
+                    coords.update(lin_pos-self.screen.get_width(), self.screen.get_height())
+                elif lin_pos <= self.screen.get_width()*2 + self.screen.get_height():
+                    coords.update(0, lin_pos-self.screen.get_width()*2)
+                else:
+                    coords.update(self.screen.get_height(), lin_pos-self.screen.get_width()*2-self.screen.get_height())
+                replacement = Star(self.screen, coords.x, coords.y)
+    
+       
 
         for group in self.groups():
             group.add(replacement)
