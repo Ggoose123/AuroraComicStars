@@ -15,6 +15,9 @@ class Star(pygame.sprite.Sprite):
         self.update_acceleration()
         self.update_velocity()
         self.update_position()
+    
+    def update_graphics(self, screen):
+        pygame.draw.circle(screen, "WHITE", self.pos, 3.0)
 
     def move(self, displacement):
         self.pos += pygame.math.Vector2(displacement)
@@ -56,14 +59,13 @@ class Star(pygame.sprite.Sprite):
         # Add drag
         drag_coef = 0.005
         new_acc = new_acc - self.vel * drag_coef
-        
+
         new_acc.clamp_magnitude(1)
 
         self.acc.update(new_acc)
         
     def update_graphics(self, screen):
         pygame.draw.circle(screen, "WHITE", self.pos, 3.0)
-        self.draw_acc()
     
     def draw_vel(self):
         pygame.draw.line(self.screen, "WHITE", self.pos, self.pos+self.vel)
