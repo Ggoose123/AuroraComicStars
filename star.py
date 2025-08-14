@@ -35,12 +35,28 @@ class Star(pygame.sprite.Sprite):
     def update_acceleration(self):
         # Initialize temp variable
         new_acc = pygame.math.Vector2(0, 0)
-        # calculate a distance variable normalized so that it is centred and results in max accel at x
-        x = 250
-        dis = (self.pos.x - self.screen.get_width()/2) / (sqrt(3/2) * x)
+        # calculate a distance variable normalized so that it is centred and results in max pull at x
+        x1 = 250
+        pull_scale = 0.015
+        pull_dis = (self.pos.x - self.screen.get_width()/2) / (sqrt(3/2) * x1)
+        # flat at about the center, forms two antisymmetrical peaks on either side and tends to 0 at +- infinity
+        pull_strength = (pull_dis**3)*(e**-(pull_dis**2))
 
-        new_acc.update(-(dis**3)*(e**-(dis**2)), 0)
+        #calculate flow accel
+        x2 = 50
+        flow_scale = 0.015
+        flow_dis = (self.pos.x - self.screen.get_width()/2) / x2
+        # follows a bell curve
+        flow_strength = e ** -(flow_dis ** 2)
+
+        # Combine previous steps
+        new_acc.update(-pull_strength, flow_strength)
+        # Add randomness
         new_acc = new_acc + pygame.math.Vector2(random.random()-0.5, random.random()-0.5) / 4
+        # Add drag
+        drag_coef = 0.005
+        new_acc = new_acc - self.vel * drag_coef
+        
         new_acc.clamp_magnitude(1)
 
         self.acc.update(new_acc)
