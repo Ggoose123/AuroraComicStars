@@ -29,7 +29,7 @@ class Star(pygame.sprite.Sprite):
         # if moved out of bounds, spawn a new star
         if (not(-50 <= self.pos.x <= self.screen.get_width() + 50)
             or not(-50 <= self.pos.y <= self.screen.get_height() + 50)):
-            self.replace(1)
+            self.screen_wrap()
 
     def update_velocity(self):
         self.vel += self.acc
@@ -39,7 +39,7 @@ class Star(pygame.sprite.Sprite):
         # Initialize temp variable
         new_acc = pygame.math.Vector2(0, 0)
         # calculate a distance variable normalized so that it is centred and results in max pull at x
-        x1 = 250
+        x1 = 50
         pull_scale = 0.015
         pull_dis = (self.pos.x - self.screen.get_width()/2) / (sqrt(3/2) * x1)
         # flat at about the center, forms two antisymmetrical peaks on either side and tends to 0 at +- infinity
@@ -53,14 +53,14 @@ class Star(pygame.sprite.Sprite):
         flow_strength = e ** -(flow_dis ** 2)
 
         # Combine previous steps
-        new_acc.update(-pull_strength, flow_strength)
+        new_acc.update(-1 * pull_strength * pull_scale, flow_strength * flow_scale)
         # Add randomness
-        new_acc = new_acc + pygame.math.Vector2(random.random()-0.5, random.random()-0.5) / 4
+        new_acc = new_acc + pygame.math.Vector2(random.random()-0.5, random.random()-0.5) / 5
         # Add drag
         drag_coef = 0.005
         new_acc = new_acc - self.vel * drag_coef
 
-        new_acc.clamp_magnitude(1)
+        new_acc.clamp_magnitude(3)
 
         self.acc.update(new_acc)
         
