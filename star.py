@@ -40,14 +40,14 @@ class Star(pygame.sprite.Sprite):
         new_acc = pygame.math.Vector2(0, 0)
         # calculate a distance variable normalized so that it is centred and results in max pull at x
         x1 = 50
-        pull_scale = 0.015
+        pull_scale = 0.03
         pull_dis = (self.pos.x - self.screen.get_width()/2) / (sqrt(3/2) * x1)
         # flat at about the center, forms two antisymmetrical peaks on either side and tends to 0 at +- infinity
         pull_strength = (pull_dis**3)*(e**-(pull_dis**2))
 
         #calculate flow accel
         x2 = 50
-        flow_scale = 0.015
+        flow_scale = 0.02
         flow_dis = (self.pos.x - self.screen.get_width()/2) / x2
         # follows a bell curve
         flow_strength = e ** -(flow_dis ** 2)
@@ -55,7 +55,7 @@ class Star(pygame.sprite.Sprite):
         # Combine previous steps
         new_acc.update(-1 * pull_strength * pull_scale, flow_strength * flow_scale)
         # Add randomness
-        new_acc = new_acc + pygame.math.Vector2(random.random()-0.5, random.random()-0.5) / 5
+        new_acc = new_acc + pygame.math.Vector2(random.random()-0.5, random.random()-0.5) / 4
         # Add drag
         drag_coef = 0.005
         new_acc = new_acc - self.vel * drag_coef
@@ -116,3 +116,13 @@ class Star(pygame.sprite.Sprite):
             self.pos.y = -50
         elif self.pos.y < -50:
             self.pos.y = self.screen.get_height() + 50
+
+    def draw_vel(self, scale):
+        pygame.draw.line(self.screen, "WHITE", self.pos, self.pos + self.vel * scale, 2)
+    
+    def draw_acc(self, scale, from_vel = False, vel_scale = 0):
+        if from_vel:
+            self.draw_vel(vel_scale)
+            pygame.draw.line(self.screen, "RED", self.pos + self.vel * vel_scale, self.pos + self.vel * vel_scale + self.acc * scale, 2)
+        else:
+            pygame.draw.line(self.screen, "RED", self.pos, self.pos + self.acc * scale, 2)
